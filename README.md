@@ -2,6 +2,8 @@
 
 Fetch files from your local Mac into a remote server terminal. Drag-drop a file into iTerm2, the agent fetches it via SSH reverse tunnel.
 
+Works with Claude Code, Codex, OpenCode, Cursor, Windsurf, and any agent that supports [SKILL.md](https://skills.sh).
+
 ## Setup
 
 ### 1. Mac (one-time)
@@ -34,9 +36,19 @@ git clone git@github.com:onecuriousmindset/filedrop.git ~/filedrop
 cd ~/filedrop && ./setup-server.sh REPLACE_WITH_YOUR_TOKEN
 ```
 
+This installs the `fetch-file` command and registers the skill for all supported agents.
+
+Or install just the skill via [skills.sh](https://skills.sh):
+
+```bash
+npx skills add onecuriousmindset/filedrop
+```
+
+Note: `npx skills add` only installs the skill file. You still need to run `setup-server.sh` for the `fetch-file` command and token.
+
 ## Usage
 
-### With Claude Code (or any AI agent)
+### With any AI agent
 
 Drag a file from Finder into your iTerm2 terminal. It pastes the local Mac path. Just send it as a message — the agent recognizes the path, fetches the file, and reads it automatically.
 
@@ -67,5 +79,5 @@ rm ~/Library/LaunchAgents/com.filedrop.server.plist
 Remote server:
 ```bash
 rm ~/bin/fetch-file ~/.filedrop-token
-rm -rf ~/.claude/skills/fetch-file
+rm -rf ~/.agents/skills/fetch-file ~/.claude/skills/fetch-file ~/.config/opencode/skills/fetch-file
 ```

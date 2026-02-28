@@ -37,10 +37,17 @@ if ! echo "$PATH" | tr ':' '\n' | grep -q "$HOME/bin"; then
     echo "Added ~/bin to PATH in $SHELL_RC"
 fi
 
-# Install Claude Code skill
-mkdir -p "$HOME/.claude/skills/fetch-file"
-cp "$SCRIPT_DIR/SKILL.md" "$HOME/.claude/skills/fetch-file/SKILL.md"
-echo "Installed Claude Code skill to ~/.claude/skills/fetch-file/"
+# Install skill for all agents (cross-agent standard + Claude Code + OpenCode)
+for dir in "$HOME/.agents/skills/fetch-file" \
+           "$HOME/.claude/skills/fetch-file" \
+           "$HOME/.config/opencode/skills/fetch-file"; do
+    mkdir -p "$dir"
+    cp "$SCRIPT_DIR/SKILL.md" "$dir/SKILL.md"
+done
+echo "Installed skill for Claude Code, Codex, OpenCode, Cursor, Windsurf"
 
 echo
 echo "Done. Start a new shell or run: export PATH=\"\$HOME/bin:\$PATH\""
+echo
+echo "Or install via skills.sh (works with any agent):"
+echo "  npx skills add onecuriousmindset/filedrop"

@@ -6,6 +6,15 @@
 
 set -euo pipefail
 
+# Colors
+BOLD='\033[1m'
+DIM='\033[2m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+YELLOW='\033[0;33m'
+WHITE='\033[1;37m'
+RESET='\033[0m'
+
 FILEDROP_DIR="$(cd "$(dirname "$0")" && pwd)"
 PLIST_NAME="com.filedrop.server"
 PLIST_PATH="$HOME/Library/LaunchAgents/${PLIST_NAME}.plist"
@@ -22,6 +31,7 @@ else
 fi
 
 # Create LaunchAgent plist
+mkdir -p "$HOME/Library/LaunchAgents"
 cat > "$PLIST_PATH" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -52,7 +62,27 @@ PLIST
 launchctl unload "$PLIST_PATH" 2>/dev/null || true
 launchctl load "$PLIST_PATH"
 
-echo "FileDrop installed. Starts automatically on login."
+# --- Output ---
+
 echo
-echo "Your token (use this on remote servers):"
-echo "  $TOKEN"
+echo -e "${GREEN}✓ FileDrop installed.${RESET} Server is running and will start automatically on login."
+echo
+echo -e "${BOLD}${WHITE}Next steps:${RESET}"
+echo
+echo -e "${CYAN}Step 1${RESET} ${DIM}— Add this to${RESET} ${BOLD}~/.ssh/config${RESET} ${DIM}on this Mac:${RESET}"
+echo
+echo -e "    ${WHITE}Host ${YELLOW}<your-server-alias>${RESET}"
+echo -e "        ${WHITE}HostName ${YELLOW}<your-server-ip>${RESET}"
+echo -e "        ${WHITE}RemoteForward 8856 localhost:8856${RESET}"
+echo
+echo -e "    ${DIM}Replace ${YELLOW}<your-server-alias>${DIM} with a name like 'dev' or 'prod'${RESET}"
+echo -e "    ${DIM}Replace ${YELLOW}<your-server-ip>${DIM} with the IP or hostname of your server${RESET}"
+echo -e "    ${DIM}Then use: ssh user@your-server-alias${RESET}"
+echo
+echo -e "${CYAN}Step 2${RESET} ${DIM}— SSH into your server and run:${RESET}"
+echo
+echo -e "    ${WHITE}git clone https://github.com/onecuriousmindset/filedrop.git ~/filedrop${RESET}"
+echo -e "    ${WHITE}cd ~/filedrop && ./setup-server.sh ${GREEN}${TOKEN}${RESET}"
+echo
+echo -e "${DIM}That's it. Drag a file into your terminal and the agent will fetch it.${RESET}"
+echo

@@ -12,25 +12,14 @@ PLIST_PATH="$HOME/Library/LaunchAgents/${PLIST_NAME}.plist"
 TOKEN_FILE="$FILEDROP_DIR/.filedrop-token"
 PYTHON3=$(which python3)
 
-echo "FileDrop Installer"
-echo
-
 # Generate a fixed token (or reuse existing)
 if [[ -f "$TOKEN_FILE" ]]; then
     TOKEN=$(<"$TOKEN_FILE")
-    echo "Using existing token from $TOKEN_FILE"
 else
     TOKEN=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))")
     echo "$TOKEN" > "$TOKEN_FILE"
     chmod 600 "$TOKEN_FILE"
-    echo "Generated new token → $TOKEN_FILE"
 fi
-
-echo
-echo "Token: $TOKEN"
-echo "Save this on your remote server(s):"
-echo "  echo \"$TOKEN\" > ~/.filedrop-token && chmod 600 ~/.filedrop-token"
-echo
 
 # Create LaunchAgent plist
 cat > "$PLIST_PATH" <<PLIST
@@ -63,12 +52,10 @@ PLIST
 launchctl unload "$PLIST_PATH" 2>/dev/null || true
 launchctl load "$PLIST_PATH"
 
-echo "LaunchAgent installed and started."
-echo "  Plist: $PLIST_PATH"
-echo "  Logs:  $FILEDROP_DIR/filedrop.log"
+echo "FileDrop installed. Starts automatically on login."
 echo
-echo "FileDrop will now start automatically on login."
+echo "Your token (use this on remote servers):"
+echo "  $TOKEN"
 echo
-echo "To uninstall:"
-echo "  launchctl unload $PLIST_PATH"
-echo "  rm $PLIST_PATH"
+echo "Remote setup:"
+echo "  ./setup-server.sh $TOKEN"

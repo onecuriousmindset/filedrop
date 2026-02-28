@@ -9,7 +9,7 @@ Works with Claude Code, Codex, OpenCode, Cursor, Windsurf, and any agent that su
 ### 1. Mac (one-time)
 
 ```bash
-git clone git@github.com:onecuriousmindset/filedrop.git ~/filedrop
+git clone https://github.com/onecuriousmindset/filedrop.git ~/filedrop
 cd ~/filedrop && ./install.sh
 ```
 
@@ -32,7 +32,7 @@ Host myserver
 Clone the repo and run the setup script with the token from step 1:
 
 ```bash
-git clone git@github.com:onecuriousmindset/filedrop.git ~/filedrop
+git clone https://github.com/onecuriousmindset/filedrop.git ~/filedrop
 cd ~/filedrop && ./setup-server.sh REPLACE_WITH_YOUR_TOKEN
 ```
 

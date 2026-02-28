@@ -33,6 +33,7 @@ ALLOWED_DIRS = [
     Path.home() / "Screenshots",
     Path.home() / "Downloads",
     Path.home() / "Documents" / "Screenshots",
+    Path("/var/folders"),
 ]
 
 ALLOWED_EXTENSIONS = {

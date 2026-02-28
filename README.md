@@ -13,7 +13,7 @@ git clone https://github.com/onecuriousmindset/filedrop.git ~/filedrop
 cd ~/filedrop && ./install.sh
 ```
 
-Follow the steps it prints.
+Follow the steps it prints. Default port is `8857`. If that's taken, use `./install.sh --port 9999`.
 
 ## Usage
 

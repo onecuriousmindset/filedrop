@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # FileDrop Mac installer — sets up LaunchAgent + fixed token.
-# Run this once on your Mac: ./install.sh
+# Run this once on your Mac: ./install.sh [--port PORT]
 #
 
 set -euo pipefail
@@ -14,6 +14,16 @@ CYAN='\033[0;36m'
 YELLOW='\033[0;33m'
 WHITE='\033[1;37m'
 RESET='\033[0m'
+
+PORT=8857
+
+# Parse args
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --port) PORT="$2"; shift 2 ;;
+        *) echo "Usage: ./install.sh [--port PORT]"; exit 1 ;;
+    esac
+done
 
 FILEDROP_DIR="$(cd "$(dirname "$0")" && pwd)"
 PLIST_NAME="com.filedrop.server"
@@ -45,6 +55,8 @@ cat > "$PLIST_PATH" <<PLIST
         <string>${FILEDROP_DIR}/mac-server.py</string>
         <string>--token</string>
         <string>${TOKEN}</string>
+        <string>--port</string>
+        <string>${PORT}</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
@@ -65,7 +77,7 @@ launchctl load "$PLIST_PATH"
 # --- Output ---
 
 echo
-echo -e "${GREEN}✓ FileDrop installed.${RESET} Server is running and will start automatically on login."
+echo -e "${GREEN}✓ FileDrop installed.${RESET} Server is running on port ${PORT} and will start automatically on login."
 echo
 echo -e "${BOLD}${WHITE}Next steps:${RESET}"
 echo
@@ -73,7 +85,7 @@ echo -e "${CYAN}Step 1${RESET} ${DIM}— Add this to${RESET} ${BOLD}~/.ssh/confi
 echo
 echo -e "    ${WHITE}Host ${YELLOW}<your-server-alias>${RESET}"
 echo -e "        ${WHITE}HostName ${YELLOW}<your-server-ip>${RESET}"
-echo -e "        ${WHITE}RemoteForward 8856 localhost:8856${RESET}"
+echo -e "        ${WHITE}RemoteForward ${PORT} localhost:${PORT}${RESET}"
 echo
 echo -e "    ${DIM}Replace ${YELLOW}<your-server-alias>${DIM} with a name like 'dev' or 'prod'${RESET}"
 echo -e "    ${DIM}Replace ${YELLOW}<your-server-ip>${DIM} with the IP or hostname of your server${RESET}"
@@ -82,7 +94,11 @@ echo
 echo -e "${CYAN}Step 2${RESET} ${DIM}— SSH into your server and run:${RESET}"
 echo
 echo -e "    ${WHITE}git clone https://github.com/onecuriousmindset/filedrop.git ~/filedrop${RESET}"
-echo -e "    ${WHITE}cd ~/filedrop && ./setup-server.sh ${GREEN}${TOKEN}${RESET}"
+if [[ "$PORT" == "8857" ]]; then
+    echo -e "    ${WHITE}cd ~/filedrop && ./setup-server.sh ${GREEN}${TOKEN}${RESET}"
+else
+    echo -e "    ${WHITE}cd ~/filedrop && ./setup-server.sh --port ${PORT} ${GREEN}${TOKEN}${RESET}"
+fi
 echo
 echo -e "${DIM}That's it. Drag a file into your terminal and the agent will fetch it.${RESET}"
 echo

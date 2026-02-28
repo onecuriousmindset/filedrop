@@ -10,9 +10,18 @@
 
 set -euo pipefail
 
-FILEDROP_PORT="${FILEDROP_PORT:-8856}"
+FILEDROP_PORT="${FILEDROP_PORT:-}"
 FILEDROP_TOKEN="${FILEDROP_TOKEN:-}"
 SAVE_DIR="$HOME/filedrop"
+
+# Load port from config if not set
+if [[ -z "$FILEDROP_PORT" ]]; then
+    if [[ -f "$HOME/.filedrop-port" ]]; then
+        FILEDROP_PORT=$(<"$HOME/.filedrop-port")
+    else
+        FILEDROP_PORT=8857
+    fi
+fi
 
 # Load token from config if not set
 if [[ -z "$FILEDROP_TOKEN" ]]; then

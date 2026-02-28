@@ -26,7 +26,7 @@ from datetime import datetime
 
 # --- Configuration ---
 
-DEFAULT_PORT = 8856
+DEFAULT_PORT = 8857
 
 ALLOWED_DIRS = [
     Path.home() / "Desktop",

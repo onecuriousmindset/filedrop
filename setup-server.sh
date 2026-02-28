@@ -3,25 +3,42 @@
 # FileDrop remote server setup.
 # Run this once on each remote server you want to use FileDrop with.
 #
-# Usage: ./setup-server.sh <token>
+# Usage: ./setup-server.sh [--port PORT] <token>
 #
 
 set -euo pipefail
 
-if [[ $# -lt 1 ]]; then
-    echo "Usage: ./setup-server.sh <token>"
+PORT=8857
+TOKEN=""
+
+# Parse args
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --port) PORT="$2"; shift 2 ;;
+        -*) echo "Usage: ./setup-server.sh [--port PORT] <token>"; exit 1 ;;
+        *) TOKEN="$1"; shift ;;
+    esac
+done
+
+if [[ -z "$TOKEN" ]]; then
+    echo "Usage: ./setup-server.sh [--port PORT] <token>"
     echo
     echo "The token is printed when you run install.sh on your Mac."
     exit 1
 fi
 
-TOKEN="$1"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Save token
 echo "$TOKEN" > "$HOME/.filedrop-token"
 chmod 600 "$HOME/.filedrop-token"
 echo "Token saved to ~/.filedrop-token"
+
+# Save port if non-default
+if [[ "$PORT" != "8857" ]]; then
+    echo "$PORT" > "$HOME/.filedrop-port"
+    echo "Port saved to ~/.filedrop-port"
+fi
 
 # Install fetch-file command
 mkdir -p "$HOME/bin"
@@ -48,6 +65,3 @@ echo "Installed skill for Claude Code, Codex, OpenCode, Cursor, Windsurf"
 
 echo
 echo "Done. Start a new shell or run: export PATH=\"\$HOME/bin:\$PATH\""
-echo
-echo "Or install via skills.sh (works with any agent):"
-echo "  npx skills add onecuriousmindset/filedrop"

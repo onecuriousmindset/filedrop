@@ -56,7 +56,7 @@ fi
 cat >> "$SHELL_RC" <<SHELL
 # filedrop start
 if ! lsof -i :${PORT} &>/dev/null; then
-    python3 ${FILEDROP_DIR}/mac-server.py --token "${TOKEN}" --port ${PORT} &>/dev/null &
+    python3 ${FILEDROP_DIR}/mac-server.py --token "\$(cat ${FILEDROP_DIR}/.filedrop-token)" --port ${PORT} &>/dev/null &
     disown
 fi
 # filedrop end

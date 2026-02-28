@@ -56,6 +56,3 @@ echo "FileDrop installed. Starts automatically on login."
 echo
 echo "Your token (use this on remote servers):"
 echo "  $TOKEN"
-echo
-echo "Remote setup:"
-echo "  ./setup-server.sh $TOKEN"

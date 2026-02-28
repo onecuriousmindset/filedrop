@@ -38,13 +38,12 @@ fetch-file "/Users/you/Desktop/Screenshot 2026-02-27.png"
 
 ## Uninstall
 
-Mac (remove the filedrop block from your shell profile):
+Mac:
 ```bash
-sed -i '' '/# filedrop start/,/# filedrop end/d' ~/.zshrc
+cd ~/filedrop && ./uninstall.sh
 ```
 
 Remote server:
 ```bash
-rm ~/bin/fetch-file ~/.filedrop-token
-rm -rf ~/.agents/skills/fetch-file ~/.claude/skills/fetch-file ~/.config/opencode/skills/fetch-file
+cd ~/filedrop && ./uninstall-server.sh
 ```

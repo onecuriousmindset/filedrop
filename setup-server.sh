@@ -15,7 +15,6 @@ TOKEN=""
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --port) PORT="$2"; shift 2 ;;
-        -*) echo "Usage: ./setup-server.sh [--port PORT] <token>"; exit 1 ;;
         *) TOKEN="$1"; shift ;;
     esac
 done

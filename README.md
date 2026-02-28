@@ -11,32 +11,27 @@ git clone git@github.com:onecuriousmindset/filedrop.git ~/filedrop
 cd ~/filedrop && ./install.sh
 ```
 
-This generates a fixed token, installs a LaunchAgent that auto-starts FileDrop on login, and survives sleep/wake.
+This generates a fixed token, installs a LaunchAgent that auto-starts FileDrop on login, and survives sleep/wake. Note down the token it prints — you'll need it for step 3.
 
 ### 2. SSH config (~/.ssh/config)
 
 Add `RemoteForward` to your server entry:
 
 ```
+# Replace "myserver" with whatever alias you want to use for `ssh myserver`
+# Replace "1.2.3.4" with your server's actual IP or hostname
 Host myserver
-    HostName ...
+    HostName 1.2.3.4
     RemoteForward 8856 localhost:8856
 ```
 
 ### 3. Remote server (one-time)
 
+Clone the repo and run the setup script with the token from step 1:
+
 ```bash
-# Save the token (printed by install.sh)
-echo "THE_TOKEN" > ~/.filedrop-token && chmod 600 ~/.filedrop-token
-
-# Install fetch-file command
-cp ~/filedrop/fetch-file ~/bin/fetch-file
-chmod +x ~/bin/fetch-file
-echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
-
-# Install Claude Code skill
-mkdir -p ~/.claude/skills/fetch-file
-cp ~/filedrop/SKILL.md ~/.claude/skills/fetch-file/SKILL.md
+git clone git@github.com:onecuriousmindset/filedrop.git ~/filedrop
+cd ~/filedrop && ./setup-server.sh REPLACE_WITH_YOUR_TOKEN
 ```
 
 ## Usage
@@ -59,7 +54,14 @@ fetch-file "/Users/you/Desktop/Screenshot 2026-02-27.png"
 
 ## Uninstall
 
+Mac:
 ```bash
 launchctl unload ~/Library/LaunchAgents/com.filedrop.server.plist
 rm ~/Library/LaunchAgents/com.filedrop.server.plist
+```
+
+Remote server:
+```bash
+rm ~/bin/fetch-file ~/.filedrop-token
+rm -rf ~/.claude/skills/fetch-file
 ```

@@ -25,6 +25,15 @@ Go to **System Settings > Privacy & Security > Full Disk Access** and enable you
 
 Drag a file from Finder into your terminal. It pastes the local Mac path. Just send it as a message — the agent recognizes the path, fetches the file, and reads it automatically.
 
+If the agent doesn't pick up the skill and says it can't access the file, add this to your `CLAUDE.md` (or `AGENTS.md` for Codex):
+
+```
+When running on this remote server, if the user pastes a macOS file path
+(starting with /Users/ or /var/folders/), use the `fetch-file` skill to
+retrieve the file from their local Mac via the SSH reverse tunnel.
+Do not tell the user the file doesn't exist locally — instead, fetch it first.
+```
+
 ### Manual
 
 ```bash

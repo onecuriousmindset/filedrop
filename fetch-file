@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+#
+# fetch-file - Pull a file from your Mac via SSH reverse tunnel (FileDrop).
+#
+# Usage:
+#   fetch-file /Users/you/Desktop/Screenshot.png
+#   fetch-file "/Users/you/Desktop/Screenshot 2026-02-27.png"
+#
+# Prints the remote path to stdout on success.
+
+set -euo pipefail
+
+FILEDROP_PORT="${FILEDROP_PORT:-8856}"
+FILEDROP_TOKEN="${FILEDROP_TOKEN:-}"
+SAVE_DIR="$HOME/filedrop"
+
+# Load token from config if not set
+if [[ -z "$FILEDROP_TOKEN" ]]; then
+    TOKEN_FILE="$HOME/.filedrop-token"
+    if [[ -f "$TOKEN_FILE" ]]; then
+        FILEDROP_TOKEN=$(<"$TOKEN_FILE")
+    else
+        echo "Error: No auth token. Set FILEDROP_TOKEN or create $TOKEN_FILE" >&2
+        exit 1
+    fi
+fi
+
+if [[ $# -lt 1 ]]; then
+    echo "Usage: fetch-file <local-mac-path>" >&2
+    exit 1
+fi
+
+LOCAL_PATH="$1"
+FILENAME=$(basename "$LOCAL_PATH")
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+SAFE_NAME="${TIMESTAMP}_${FILENAME// /_}"
+DEST="$SAVE_DIR/$SAFE_NAME"
+
+mkdir -p "$SAVE_DIR"
+
+# URL-encode the path
+ENCODED_PATH=$(python3 -c "import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]))" "$LOCAL_PATH" 2>/dev/null || \
+    echo "$LOCAL_PATH" | sed 's/ /%20/g')
+
+HTTP_CODE=$(curl -s -w "%{http_code}" -o "$DEST" \
+    -H "Authorization: Bearer $FILEDROP_TOKEN" \
+    "http://localhost:${FILEDROP_PORT}/fetch?path=${ENCODED_PATH}")
+
+if [[ "$HTTP_CODE" == "200" ]]; then
+    echo "$DEST"
+else
+    # Try to read error from response
+    ERROR=$(cat "$DEST" 2>/dev/null || echo "unknown error")
+    rm -f "$DEST"
+    echo "Error: HTTP $HTTP_CODE - $ERROR" >&2
+    exit 1
+fi

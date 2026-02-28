@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# FileDrop Mac installer — sets up LaunchAgent + fixed token.
+# FileDrop Mac installer — adds auto-start to shell profile.
 # Run this once on your Mac: ./install.sh [--port PORT]
 #
 
@@ -26,10 +26,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 FILEDROP_DIR="$(cd "$(dirname "$0")" && pwd)"
-PLIST_NAME="com.filedrop.server"
-PLIST_PATH="$HOME/Library/LaunchAgents/${PLIST_NAME}.plist"
 TOKEN_FILE="$FILEDROP_DIR/.filedrop-token"
-PYTHON3=$(which python3)
 
 # Generate a fixed token (or reuse existing)
 if [[ -f "$TOKEN_FILE" ]]; then
@@ -40,44 +37,41 @@ else
     chmod 600 "$TOKEN_FILE"
 fi
 
-# Create LaunchAgent plist
-mkdir -p "$HOME/Library/LaunchAgents"
-cat > "$PLIST_PATH" <<PLIST
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>${PLIST_NAME}</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>${PYTHON3}</string>
-        <string>${FILEDROP_DIR}/mac-server.py</string>
-        <string>--token</string>
-        <string>${TOKEN}</string>
-        <string>--port</string>
-        <string>${PORT}</string>
-    </array>
-    <key>RunAtLoad</key>
-    <true/>
-    <key>KeepAlive</key>
-    <true/>
-    <key>StandardOutPath</key>
-    <string>${FILEDROP_DIR}/filedrop.log</string>
-    <key>StandardErrorPath</key>
-    <string>${FILEDROP_DIR}/filedrop.log</string>
-</dict>
-</plist>
-PLIST
+# Remove old LaunchAgent if present
+PLIST_PATH="$HOME/Library/LaunchAgents/com.filedrop.server.plist"
+if [[ -f "$PLIST_PATH" ]]; then
+    launchctl unload "$PLIST_PATH" 2>/dev/null || true
+    rm "$PLIST_PATH"
+fi
 
-# Load the agent (unload first if already running)
-launchctl unload "$PLIST_PATH" 2>/dev/null || true
-launchctl load "$PLIST_PATH"
+# Add to shell profile
+SHELL_RC="$HOME/.zshrc"
+[[ -f "$HOME/.bashrc" && ! -f "$HOME/.zshrc" ]] && SHELL_RC="$HOME/.bashrc"
+
+# Remove old filedrop block if present, then add new one
+if grep -q '# filedrop' "$SHELL_RC" 2>/dev/null; then
+    sed -i '' '/# filedrop start/,/# filedrop end/d' "$SHELL_RC"
+fi
+
+cat >> "$SHELL_RC" <<SHELL
+# filedrop start
+if ! lsof -i :${PORT} &>/dev/null; then
+    python3 ${FILEDROP_DIR}/mac-server.py --token "${TOKEN}" --port ${PORT} &>/dev/null &
+    disown
+fi
+# filedrop end
+SHELL
+
+# Start it now too
+if ! lsof -i :${PORT} &>/dev/null; then
+    python3 "${FILEDROP_DIR}/mac-server.py" --token "${TOKEN}" --port ${PORT} &>/dev/null &
+    disown
+fi
 
 # --- Output ---
 
 echo
-echo -e "${GREEN}✓ FileDrop installed.${RESET} Server is running on port ${PORT} and will start automatically on login."
+echo -e "${GREEN}✓ FileDrop installed.${RESET} Server starts automatically when you open a terminal."
 echo
 echo -e "${BOLD}${WHITE}Next steps:${RESET}"
 echo

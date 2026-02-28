@@ -29,6 +29,7 @@ fetch-file "/Users/you/Desktop/Screenshot 2026-02-27.png"
 
 ## Security
 
+- Server only runs when your terminal is open — not a background daemon
 - Server binds to `localhost` only — not network-accessible
 - Tunnel only exists while your SSH session is active
 - Whitelisted directories: `~/Desktop`, `~/Screenshots`, `~/Downloads`, `~/Documents/Screenshots`, `/var/folders`
@@ -37,10 +38,9 @@ fetch-file "/Users/you/Desktop/Screenshot 2026-02-27.png"
 
 ## Uninstall
 
-Mac:
+Mac (remove the filedrop block from your shell profile):
 ```bash
-launchctl unload ~/Library/LaunchAgents/com.filedrop.server.plist
-rm ~/Library/LaunchAgents/com.filedrop.server.plist
+sed -i '' '/# filedrop start/,/# filedrop end/d' ~/.zshrc
 ```
 
 Remote server:

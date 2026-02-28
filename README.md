@@ -36,13 +36,17 @@ cd ~/filedrop && ./setup-server.sh REPLACE_WITH_YOUR_TOKEN
 
 ## Usage
 
-Drag a file into iTerm2. It pastes the local path. Send it. The agent fetches and reads it automatically.
+### With Claude Code (or any AI agent)
 
-Manual:
+Drag a file from Finder into your iTerm2 terminal. It pastes the local Mac path. Just send it as a message — the agent recognizes the path, fetches the file, and reads it automatically.
+
+### Manual (without an agent)
 
 ```bash
 fetch-file "/Users/you/Desktop/Screenshot 2026-02-27.png"
 ```
+
+Prints the remote path where the file was saved (e.g. `~/filedrop/20260228_131601_Screenshot.png`).
 
 ## Security
 

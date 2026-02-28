@@ -15,6 +15,10 @@ cd ~/filedrop && ./install.sh
 
 Follow the steps it prints. Default port is `8857`. If that's taken, use `./install.sh --port 9999`.
 
+**Important:** Your terminal app (iTerm2, Ghostty, etc.) needs **Full Disk Access** to support drag-and-drop screenshots. macOS stores screenshots in a protected temp directory (`/var/folders/.../NSIRD_screencaptureui_*/`) that no app can read without this permission.
+
+Go to **System Settings > Privacy & Security > Full Disk Access** and enable your terminal app. Files from `~/Desktop` or `~/Downloads` work without this.
+
 ## Usage
 
 ### With any AI agent

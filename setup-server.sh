@@ -60,7 +60,7 @@ for dir in "$HOME/.agents/skills/fetch-file" \
     mkdir -p "$dir"
     cp "$SCRIPT_DIR/SKILL.md" "$dir/SKILL.md"
 done
-echo "Installed skill for Claude Code, Codex, OpenCode, Cursor, Windsurf"
+echo "Installed skill for Claude Code, Codex, OpenCode, Gemini CLI"
 
 echo
 echo "Done. Start a new shell or run: export PATH=\"\$HOME/bin:\$PATH\""

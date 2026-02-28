@@ -2,7 +2,7 @@
 
 Fetch files from your local Mac into a remote server terminal. Drag-drop a file into your terminal, the agent fetches it via SSH reverse tunnel.
 
-Works with Claude Code, Codex, OpenCode, Cursor, Windsurf, and any agent that supports [SKILL.md](https://skills.sh).
+Works with Claude Code, Codex, OpenCode, Gemini CLI, and any terminal-based agent that supports [SKILL.md](https://skills.sh).
 
 ## Setup
 

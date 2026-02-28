@@ -1,7 +1,7 @@
 ---
 name: fetch-file
 description: Fetch files from the user's local Mac when they share a macOS file path (starting with /Users/ or /var/folders/). The file is pulled via SSH reverse tunnel and saved locally for viewing. Use this when the user drags and drops a file into the terminal or pastes a local Mac path.
-compatibility: ["claude-code", "codex", "opencode", "cursor", "windsurf"]
+compatibility: ["claude-code", "codex", "opencode", "gemini-cli"]
 ---
 
 # Fetch File from Local Mac (FileDrop)
